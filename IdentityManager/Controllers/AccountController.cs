@@ -23,6 +23,7 @@ namespace IdentityManager.Controllers
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ISendGridEmail sendGridEmail,
             UrlEncoder urlEncoder)
         {
+
             _userManager = userManager;
             _signInManager = signInManager;
             _sendGridEmail = sendGridEmail;
