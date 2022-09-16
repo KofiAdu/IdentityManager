@@ -1,0 +1,30 @@
+﻿@using IdentityManager.ViewModels
+@model VerifyAuthenticatorViewModel
+
+<h1>Verify Authentication Code</h1>
+
+<form asp-controller="Account" asp-action="VerifyAuthenticatorCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="col-md-10">
+        <input asp-for="Code" class="form-control"/>
+        @*//add a validation*@
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="offset-md-2 col-md-10">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+</form>
+
+@*
+    In order for validations to work we need to
+    include the _ValidationScriptsPartial file for it to work
+    on the client side
+*@
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

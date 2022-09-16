@@ -1,0 +1,36 @@
+﻿@using IdentityManager.ViewModels
+@model TwoFactorAuthenticationViewModel
+
+
+<h4>Please enter the code from your authenticator app</h4>
+
+<p>
+    Enter this key in your authenticator app: <strong>@Model.Token</strong>
+</p>
+
+@*<p>
+    You can also to use this QR Code
+</p>
+
+<div id="qrcode">
+
+</div>*@
+
+<form method="post">
+    <input asp-for="Token" hidden/>
+    <div class="form-group">
+        Code: <input type="text" class="form-control" asp-for="Code"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@*
+    adding js scripts to generate qrcode from the qrcode.js file
+*@
+
+@*@section Scripts{
+    <script src="~/js/qrcode.js"></script>
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrcode"), "@Model.QRCodeUri")
+    </script>
+}*@

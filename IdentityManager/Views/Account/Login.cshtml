@@ -1,0 +1,100 @@
+﻿@using IdentityManager.ViewModels
+@model LoginViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>@ViewData["Title"].</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+            <h4>Log into your existing account</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input  asp-for="Name" class="form-control" placeholder="Name"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input asp-for="Password" class="form-control" placeholder="Password"/>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <div class="custom-checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe"/>
+                            @Html.DisplayNameFor(x=> x.RememberMe);
+                        </label>
+                        
+                    </div>
+                </div>
+            </div>
+
+           <br />
+            <div class="form-group">
+                <div class="col-md-2">
+                     <button type="submit" class="btn btn-success">Log in</button>
+                </div>
+            </div>
+            <br />
+            <a asp-action="Register">Create an Account</a> |
+            <a asp-action="ForgotPassword">Forgot Password?</a>
+        </form>
+
+    </div>
+    @*
+        Adding external login
+    *@
+
+    @{
+        @*getting all the authentication schemes registered in program.cs (eg. Facebook, Google etc)*@
+        var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
+
+        //adding them to a lsit
+        var loginProviders = schemes.ToList();
+    }
+    @if(loginProviders.Count()>0){
+        <div class="col-md-4">
+            <section>
+                <h4>Use External Login</h4>
+                <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                    <div>
+                        <p>
+                            @foreach (var provider in loginProviders)
+                            {
+                                <button type="submit" class="btn btn-outline-primary" name="provider" value="@provider.Name" 
+                                title="Log in using your @provider.Name account">
+                                    @provider.Name
+                                </button>
+                            }
+                        </p>
+                    </div>
+                </form>
+            </section>
+        </div>
+    }
+</div>
+
+@*
+    In order for validations to work we need to 
+    include the _ValidationScriptsPartial file for it to work
+    on the client side
+*@
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

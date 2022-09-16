@@ -1,0 +1,48 @@
+﻿@using IdentityManager.ViewModels
+@model ExternalLoginConfirmationViewModel
+@{
+    ViewData["Title"] = "External Login";
+}
+
+<h1>@ViewData["Title"].</h1>
+
+<form asp-controller="Account" asp-action="ExternalLoginConfirmation" role="form" method="post" class="form-horizontal" asp-route-returnurl="@ViewData["ReturnUrl"]">
+     <h4>Link your @ViewData["ProviderDisplayName"]</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <p>
+        <strong>@ViewData["ProviderDisplayName"]</strong> authentication successful. Please click on register to register
+    </p>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input asp-for="Email" class="form-control" placeholder="Email"/>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-10">
+            <input asp-for="Name" class="form-control" placeholder="Name"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <br />
+
+    <div class="form-group">
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success form-control">Login</button>
+        </div>
+    </div>
+</form>
+
+@*
+    In order for validations to work we need to 
+    include the _ValidationScriptsPartial file for it to work
+    on the client side
+*@
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

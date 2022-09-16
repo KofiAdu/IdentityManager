@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+
+    @if(User.Identity.IsAuthenticated)
+    {
+        var Tfa = ViewData["TwoFactorEnabled"];
+        if(Tfa != null && Tfa .ToString().ToLower() == "true")
+        {
+            <a asp-action="DisableAuthenticator" asp-controller="Account" class="btn btn-danger">Reset or Disable MFA</a>
+        }
+        else
+        {
+            <a asp-action="EnableAuthenticator" asp-controller="Account">Enable MultiFactor Authentication</a>
+        }
+       
+    }
+</div>
