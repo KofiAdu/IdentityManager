@@ -1,0 +1,64 @@
+﻿@model IEnumerable<AppUser>
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-primary">Users</h2>
+    </div>
+</div>
+
+<div class="p-4 border rounded">
+    @if(Model.Count() > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-secondary">
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach(var item in Model)
+            {
+                <tbody>
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Email</td>
+                        <td>@item.Role</td>
+                        <td>
+                            <div class="text-center">
+                                <form asp-action="Delete" asp-route-userId="@item.Id">
+                                    @* Edit*@
+                                    @*asp-route-[name of variable you're using]*@
+                                    <a asp-action="Edit" asp-route-userId="@item.Id" class="btn btn-info" style="cursor:pointer">
+                                        Edit
+                                    </a>
+
+
+                                    <a asp-action="ManageUserClaims" asp-route-userId="@item.Id" class=" btn btn-primary text-white" style="cursor:pointer">Claims</a>
+
+                                    @if(item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
+                                    {
+                                        //lock option
+                                        <button asp-action="Lockunlock" asp-route-userId="@item.Id" class="btn btn-secondary text-white" style="cursor:pointer"><span>&nbsp; Lock &nbsp;</span></button>
+                                    }
+                                    else
+                                    {
+                                        <button asp-action="Lockunlock" asp-route-userId="@item.Id" class="btn btn-warning text-white" style="cursor:pointer"><span>&nbsp; UnLock &nbsp;</span></button>
+                                    }
+
+                                    @*Delete*@
+
+                                    <button type="submit" onclick="return confirm('Do you want to delte this')" class="btn btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+            
+        </table>
+    }
+</div>

@@ -1,6 +1,7 @@
 using IdentityManager.Data;
 using IdentityManager.Helpers;
 using IdentityManager.Interfaces;
+using IdentityManager.PersonalizedAuthorization;
 using IdentityManager.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-//adding services
+//adding services (email services)
 builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
 
 //forgot the note lol
@@ -26,6 +27,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = true;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
     options.Lockout.MaxFailedAccessAttempts = 5;
+});
+
+//setting default  paths
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    //access denied path
+    options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/AccessDenied");
 });
 
 //configuring facebook login authentication 
@@ -42,6 +50,18 @@ builder.Services.AddAuthentication().AddGoogle(options =>
     //add your google clientid and aclient secret
     options.ClientId = "";
     options.ClientSecret = "";
+});
+
+
+//configuring policy based authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("Admin_CreateAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True"));
+    options.AddPolicy("Admin_Create_Edit_DeleteAccess(", policy => policy.RequireRole("Admin").RequireClaim("create", "True").RequireClaim("edit","True").RequireClaim("delete","True"));
+
+    //adding custom handler policy
+    options.AddPolicy("AdminAuthorization", policy => policy.Requirements.Add(new AdminAuthorization()));
 });
 
 builder.Services.AddControllersWithViews();

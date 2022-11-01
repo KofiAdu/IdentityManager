@@ -3,6 +3,7 @@ using IdentityManager.Models;
 using IdentityManager.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
@@ -18,17 +19,17 @@ namespace IdentityManager.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ISendGridEmail _sendGridEmail;
         private readonly UrlEncoder _urlEncoder;
-        //private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ISendGridEmail sendGridEmail,
-            UrlEncoder urlEncoder)
+            UrlEncoder urlEncoder, RoleManager<IdentityRole> roleManager)
         {
 
             _userManager = userManager;
             _signInManager = signInManager;
             _sendGridEmail = sendGridEmail;
             _urlEncoder = urlEncoder;
-            //_roleManager = roleManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -39,8 +40,32 @@ namespace IdentityManager.Controllers
         [HttpGet]
         public async Task<IActionResult> Register(string? returnUrl = null)
         {
+            //creating new roles in the regsiter get method
+            //create new roles if the role does not exist
+            if(!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                //create new roles
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+            }
+
+            List<SelectListItem> listItems = new()
+            {
+                new SelectListItem()
+                {
+                    Value = "Admin",
+                    Text = "Admin"
+                },
+                new SelectListItem()
+                {
+                    Value = "User",
+                    Text = "User"
+                }
+            };
+
             ViewData["ReturnUrl"] = returnUrl;
-            RegisterViewModel registerViewModel = new();
+            //RoleList = listItems
+            RegisterViewModel registerViewModel = new() {};
             return View(registerViewModel);
         }
 
@@ -63,6 +88,18 @@ namespace IdentityManager.Controllers
                 //check success to sign in
                 if (result.Succeeded)
                 {
+                    //assigning role the selected role
+                    //register.RoleSelected != null && register.RoleSelected.Length>0 && register.RoleSelected == "Admin"
+                    if (register.Email.Contains("adukofi73@yahoo.com"))
+                    {
+                        //assigning role
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
+
                     //verifying email before signing user in
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -81,6 +118,24 @@ namespace IdentityManager.Controllers
                 //if sign in is unsuccessful, add errors from result
                 AddErrors(result);
             }
+
+            //this allows role list to be repopulated if there is an error with the model
+            //add new role items
+            List<SelectListItem> listItems = new()
+            {
+                new SelectListItem()
+                {
+                    Value = "Admin",
+                    Text = "Admin"
+                },
+                new SelectListItem()
+                {
+                    Value = "User",
+                    Text = "User"
+                }
+            };
+            //repopulate RoleList in register model
+            //register.RoleList = listItems;
 
             return View(register);
         }
@@ -337,6 +392,9 @@ namespace IdentityManager.Controllers
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    //setting role to "User" by default for external logins
+                    await _userManager.AddToRoleAsync(user, "User");
+
                     //add login
                     //paramters user, externalLoginInfo
                     result = await _userManager.AddLoginAsync(user, externalLoginInfo);

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/IdentityManager.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" crossorigin="anonymous" />
 </head>
 <body>
     <header>
@@ -27,6 +28,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Access Checker
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AuthorizedAccess">Authorized Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAccess">User Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminAccess">Admin Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="Admin_CreateAccess">Admin - Create only Claim Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="Admin_Create_Edit_DeleteAccess">Admin - Create,Edit & Delete Claim Access</a>
+                               
+                            </div>
+                        </li>
                     </ul>
                     <partial name="_LoginPartialCustom"/>
                 </div>
@@ -35,6 +50,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_Notifications" />
             @RenderBody()
         </main>
     </div>

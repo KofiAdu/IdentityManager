@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-primary">Roles</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Upsert" asp-controller="Roles" class="btn btn-outline-primary">Add new role</a>
+    </div>
+</div>
+
+<div class="p-4 border rounded">
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-secondary">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tbody>
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>
+                            <div class="text-center">
+                                <form asp-action="Delete" asp-route-id="@item.Id">
+                               @* Edit*@
+                                <a asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-info" style="cursor:pointer">
+                                    Edit
+                                </a>
+                                @*Delete*@
+                                
+                                    <button type="submit" onclick="return confirm('Do you want to delte this')" class="btn btn-danger">  
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+
+        </table>
+    }
+</div>

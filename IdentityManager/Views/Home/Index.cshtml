@@ -18,5 +18,26 @@
             <a asp-action="EnableAuthenticator" asp-controller="Account">Enable MultiFactor Authentication</a>
         }
        
+        <br />
+        <br />
+        @if(User.IsInRole("Admin"))
+        {
+            <h3>Role: ADMIN</h3>
+            <h5><a asp-action="Index" asp-controller="User" class="btn btn-primary">View list of users</a></h5>
+            <h5><a asp-action="Index" asp-controller="Roles" class="btn btn-primary">View Roles</a></h5>
+        }
+        else
+        {
+            <h3>Role: User</h3>
+        }
+        @*<a class="dropdown-item" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>*@
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="AuthorizedAccess">Authorized Access</a>
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="UserAccess">User Access</a>
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="AdminAccess">Admin Access</a>
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="Admin_CreateAccess">Admin - Create only Claim Access</a>
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="Admin_Create_Edit_DeleteAccess">Admin - Create,Edit & Delete Claim Access</a>
+        <a class="btn btn-primary" asp-controller="AccessChecker" asp-action="UserOrAdminAccess"> User or Admin</a>
     }
 </div>
+
+<a class="btn btn-primary" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>
