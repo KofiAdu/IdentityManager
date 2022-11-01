@@ -1,4 +1,4 @@
-#IdentityManager
+# IdentityManager
 This is a simple authentication web app with Identity Manager in ASP.NET .
 
 Functionalities: Register, Login, Logout, Reset Forgotten Password, Email Confirmation, External Login with Facebook and Google, TwoFactor Authentication with authentication app.
