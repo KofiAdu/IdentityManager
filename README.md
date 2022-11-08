@@ -7,4 +7,3 @@ External Login functionality requires resgistering web app on the external login
 
 Also, setting up email confirmation and resetting forgotten password requires setting up an acoount with an email provider(Sendgrid) and adding your apikey to the appsettings.json
 
-Also this app has been hosted on Azure. Link https://identitymanager20221101213109.azurewebsites.net/
